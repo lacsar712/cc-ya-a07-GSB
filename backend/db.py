@@ -25,4 +25,23 @@ CREATE TABLE IF NOT EXISTS yaw_logs (
     created_at timestamptz NOT NULL,
     processed_at timestamptz
 );
+
+CREATE TABLE IF NOT EXISTS lockout_windows (
+    id serial PRIMARY KEY,
+    turbine_code text NOT NULL,
+    start_at timestamptz NOT NULL,
+    end_at timestamptz NOT NULL,
+    reason text,
+    created_by text NOT NULL,
+    created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS lockout_reject_logs (
+    id serial PRIMARY KEY,
+    window_id integer NOT NULL REFERENCES lockout_windows(id),
+    turbine_code text NOT NULL,
+    yaw_err_deg double precision NOT NULL,
+    attempted_by text NOT NULL,
+    attempted_at timestamptz NOT NULL DEFAULT now()
+);
 """
